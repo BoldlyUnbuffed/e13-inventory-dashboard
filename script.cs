@@ -1,10 +1,11 @@
 // LCD Panel to be used to display inventory
 // Set panel to Mono font for best result
-private string consoleName =  "Inventory LCD Panel";
+private string consoleName =  "Inventory Dashboard";
 
 // List of subtypes to filter the display for
 // Only Ore and Ingot types supported
 private List<string> subtypeFilter = new List<string>{ 
+        "Ice",
         "Stone",
         "Iron",
         "Silicon",
@@ -13,8 +14,8 @@ private List<string> subtypeFilter = new List<string>{
         "Magensium",
         "Silver",
         "Gold",
+        "Uranium",
         "Platinum",
-        "Ice",
 };
 
 private List<IMyTerminalBlock> entityList = new List<IMyTerminalBlock>();
@@ -95,9 +96,13 @@ public void Main(string argument, UpdateType updateSource)
         
         // Write a line for the material inlcuding the material name and amounts of ingots and ore
         string s = String.Format("{0,-10}{1,7} {2,7}\n", material, formatAmount(ingots), formatAmount(ore));
+        if (material == "Stone" || material == "Ice") {
+            s = String.Format("{0,-10}{1,7} {2,7}\n", material, "", formatAmount(ore));
+        }
         console.WriteText(s, true);
     }
 }
+
 
 private string formatAmount(MyFixedPoint amount) {
     if (amount >= 1000000000) {
@@ -109,7 +114,7 @@ private string formatAmount(MyFixedPoint amount) {
     if (amount >= 1000) {
         return String.Format("{0:F1}k", amount.ToIntSafe() / 1000f);
     }
-    return String.Format("{0}", amount.ToIntSafe());
+    return String.Format("{0:0.#}", (float) amount);
 }
 
 public Program()
